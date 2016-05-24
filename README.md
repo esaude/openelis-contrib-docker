@@ -28,8 +28,8 @@ Enter the directory and build the images:
 cd openelis-contrib-docker
 docker-compose build
 
+````
 Once the build is complete, you can run the openelis by executing the following:
-
 ````
 docker-compose up
 ````
