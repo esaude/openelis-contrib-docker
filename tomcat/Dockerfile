@@ -16,10 +16,11 @@ RUN apk add --update openjdk7 curl; \
     rm -rf ${TOMCAT_HOME}/webapps/*; \
     curl -L https://bintray.com/esaude/openelis/download_file?file_path=openElisGlobal.war \
       -o ${TOMCAT_HOME}/webapps/openElisGlobal.war; \
-    
+    touch ${TOMCAT_HOME}/logs/openELIS.log; \
     apk del curl && rm -f /var/cache/apk/*
 
 COPY setenv.sh ${TOMCAT_HOME}/bin/setenv.sh
+COPY openElisGlobal.xml ${TOMCAT_HOME}/conf/openElisGlobal.xml
 
 EXPOSE 8080
 
