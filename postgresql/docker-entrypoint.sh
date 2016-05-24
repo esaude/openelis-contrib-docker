@@ -38,15 +38,15 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     # 2 create new database owned by that user with UTF-8 encoding
 
         tempFile=$(mktemp)
-      if [ ! -f "tempFile" ]; then
+      if [ ! -f "$tempFile" ]; then
           return 1
       fi
 
       cat <<-EOF > "$tempFile"
-      		CREATE USER clinlims IDENTIFIED BY 'clinlims';
+      		CREATE USER 'clinlims' IDENTIFIED BY 'clinlims';
       		GRANT ALL PRIVILEGES ON *.* TO 'clinlims'@'localhost' WITH GRANT OPTION;
       		CREATE DATABASE IF NOT EXISTS 'clinlims' CHARACTER SET utf8 COLLATE utf8_general_ci;
-      		GRANT ALL ON 'clinlims'.* to 'clinlims'@'%' IDENTIFIED BY 'clinlims';
+      		GRANT ALL ON 'clinlims' to 'clinlims'@'%' IDENTIFIED BY 'clinlims';
       	EOF
 
         psql --username "clinlims" --dbname "clinlims" < "$tempFile"
