@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="updateDB" name="openElisGlobal">
+    <property environment="env"/>
+    <property name="db_root" value="${basedir}/liquibase"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <property name="db_name" value="clinlims" />
+    <property name="db_user" value="clinlims" />
+    <property name="db_pw" value="clinlims" />
+
+    <target name="applyUpdate" description="Does the actual update to database" >
+     <echo message="Updating context ${context}"/>
+     <exec executable="java" dir="${db_root}">
+            <arg line="-jar -Dfile.encoding=utf-8 ./lib/liquibase-1.9.5.jar --defaultsFile=./liquibase.properties  --contexts=${context} --username=${db_user} --password=${db_pw} --url=jdbc:postgresql://localhost:5432/${dbName} update"/>
+      </exec>
+
+    </target>
+        
+    <target name="updateDB" description="Installs changes to DB using liquibase">
+
+      <antcall target="applyUpdate">
+        <param name="context" value="VN_APHL" />
+        <param name="dbName" value="${db_name}" />
+      </antcall> 
+        
+    </target>
+</project>
+

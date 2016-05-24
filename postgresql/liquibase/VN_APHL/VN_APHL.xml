@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!-- Data specific to VN version -->    
+    <changeSet author="jsibley" id="2" context="VN_APHL" runOnChange="true">
+		<comment>Initialize several tables with VN-specific values</comment>
+		<sqlFile path="VN_APHL/VN_APHL_Initialize.sql"/>
+    </changeSet>
+    
+    <changeSet author="jsibley" id="3" context="VN_APHL" runOnChange="true">
+		<comment>Initialize test catalog related tables with VN-specific values</comment>
+		<sqlFile path="VN_APHL/VN_APHL_Initialize_Test_Catalog.sql"/>
+    </changeSet>
+
+    <changeSet author="jsibley" id="4" context="VN_APHL" runOnChange="true">
+    	<comment>Set unknown gender value</comment>
+		<insert tableName="gender" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'gender_seq' ) " />
+			<column name="gender_type" value="U" />
+			<column name="description" value="UNKNOWN" />
+			<column name="lastupdated" valueDate=" now() " />
+			<column name="name_key" value="gender.unknown" />
+		</insert>
+    </changeSet>
+
+    <changeSet author="jsibley" id="5" context="VN_APHL" runOnChange="true">
+    	<comment>Disable automated jobs</comment>
+    	<update tableName="quartz_cron_scheduler" schemaName="clinlims">
+    		<column name="active" value="false" />
+    	</update>
+	</changeSet>
+
+    <changeSet author="jsibley" id="6" context="VN_APHL" runOnChange="true">
+    	<comment>Set/unset some configuration values</comment>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="Vietnam APHL" />
+    		<where>name = 'configuration name'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="vi-VN" />
+    		<where>name = 'default date locale'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="vi-VN" />
+    		<where>name = 'default language locale'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="VN" />
+    		<where>name = 'stringContext'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="VN_APHL" />
+    		<where>name = 'setFieldForm'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="YEAR_SITE_SIX" />
+    		<where>name = 'acessionFormat'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="" />
+    		<where>name = 'Accession number prefix'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="70" />
+    		<where>name = 'siteNumber'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="" />
+    		<where>name = 'patientSearchPassword'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="" />
+    		<where>name = 'patientSearchURL'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="" />
+    		<where>name = 'patientSearchLogOnUser'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="false" />
+    		<where>name = 'useExternalPatientSource'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="true" />
+    		<where>name = 'external orders'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="true" />
+    		<where>name = 'validate phone format'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="dddddddddd" />
+    		<where>name = 'phone format'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="true" />
+    		<where>name = 'trackPayment'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="false" />
+    		<where>name = 'malariaCaseReport'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="false" />
+    		<where>name = 'malariaSurReport'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="false" />
+    		<where>name = 'resultReporting'</where>
+    	</update>
+    	<update tableName="site_information" schemaName="clinlims">
+    		<column name="value" value="Thành công!" />
+    		<where>name = 'testUsageSendStatus'</where>
+    	</update>
+    </changeSet>
+
+    <changeSet author="jsibley" id="7" context="VN_APHL" runOnChange="true">
+		<comment>Adds sample label printing options to site_information</comment>
+		<insert tableName="site_information_domain" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_domain_seq' ) " />
+			<column name="name" value="sampleLabelConfig" />
+			<column name="description" value="Configuration options for sample label printing"/>
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: accession #" />
+			<column name="description" value="Whether or not to include accession numbers on the master labels." />
+			<column name="value" value="true" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: accession #" />
+			<column name="description" value="The prefix to print before the accession number on the master labels (120 characters max.)." />
+			<column name="value" value="" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: collection date" />
+			<column name="description" value="Whether or not to include specimen collection date on the master labels." />
+			<column name="value" value="true" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: collection date" />
+			<column name="description" value="The prefix to print before the collection date on the master labels (120 characters max.)." />
+			<column name="value" value="Collect Date:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: collection time" />
+			<column name="description" value="Whether or not to include specimen collection time on the master labels." />
+			<column name="value" value="true" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: collection time" />
+			<column name="description" value="The prefix to print before the collection time on the master labels (120 characters max.)." />
+			<column name="value" value="Collect Time:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient ID" />
+			<column name="description" value="Whether or not to include patient ID on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient ID" />
+			<column name="description" value="The prefix to print before the patient ID on the master labels (120 characters max.)." />
+			<column name="value" value="Pat. ID:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: national ID" />
+			<column name="description" value="Whether or not to include national ID on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: national ID" />
+			<column name="description" value="The prefix to print before the national ID on the master labels (120 characters max.)." />
+			<column name="value" value="Nat. ID:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient MRN" />
+			<column name="description" value="Whether or not to include patient medical record number on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient MRN" />
+			<column name="description" value="The prefix to print before the patient MRN on the master labels (120 characters max.)." />
+			<column name="value" value="MRN:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient name" />
+			<column name="description" value="Whether or not to include patient name on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient name" />
+			<column name="description" value="The prefix to print before the patient name on the master labels (120 characters max.)." />
+			<column name="value" value="Name:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient DOB" />
+			<column name="description" value="Whether or not to include patient date of birth on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient DOB" />
+			<column name="description" value="The prefix to print before the patient DOB on the master labels (120 characters max.)." />
+			<column name="value" value="DOB:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient age" />
+			<column name="description" value="Whether or not to include patient age on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient age" />
+			<column name="description" value="The prefix to print before the patient age on the master labels (120 characters max.)." />
+			<column name="value" value="Age:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: patient gender" />
+			<column name="description" value="Whether or not to include patient gender on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: patient gender" />
+			<column name="description" value="The prefix to print before the patient gender on the master labels (120 characters max.)." />
+			<column name="value" value="Sex:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: lab section(s)" />
+			<column name="description" value="Whether or not to include lab section(s) where specimen processed on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: lab section(s)" />
+			<column name="description" value="The prefix to print before the lab section(s) on the master labels (120 characters max.)." />
+			<column name="value" value="Section(s):" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master labels: specimen type" />
+			<column name="description" value="Whether or not to include specimen type on the master labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Master prefix: specimen type" />
+			<column name="description" value="The prefix to print before the specimen type on the master labels (120 characters max.)." />
+			<column name="value" value="Type:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="useSpecimenLabels" />
+			<column name="description" value="If true, show sample item print label fields/buttons." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: accession #" />
+			<column name="description" value="Whether or not to include accession number on the sample item labels." />
+			<column name="value" value="true" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: accession #" />
+			<column name="description" value="The prefix to print before the accession number on the specimen labels (120 characters max.)." />
+			<column name="value" value="" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: collection date" />
+			<column name="description" value="Whether or not to include specimen collection date on the sample item labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: collection date" />
+			<column name="description" value="The prefix to print before the collection date on the specimen labels (120 characters max.)." />
+			<column name="value" value="Collect date:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: collection time" />
+			<column name="description" value="Whether or not to include specimen collection time on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: collection time" />
+			<column name="description" value="The prefix to print before the collection time on the specimen labels (120 characters max.)." />
+			<column name="value" value="Collect Time:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient ID" />
+			<column name="description" value="Whether or not to include patient ID on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient ID" />
+			<column name="description" value="The prefix to print before the patient ID on the specimen labels (120 characters max.)." />
+			<column name="value" value="Pat. ID:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: national ID" />
+			<column name="description" value="Whether or not to include national ID on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: national ID" />
+			<column name="description" value="The prefix to print before the national ID on the specimen labels (120 characters max.)." />
+			<column name="value" value="Nat. ID:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient MRN" />
+			<column name="description" value="Whether or not to include patient medical record number on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient MRN" />
+			<column name="description" value="The prefix to print before the patient MRN on the specimen labels (120 characters max.)." />
+			<column name="value" value="MRN:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient name" />
+			<column name="description" value="Whether or not to include patient name on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient name" />
+			<column name="description" value="The prefix to print before the patient name on the specimen labels (120 characters max.)." />
+			<column name="value" value="Name:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient DOB" />
+			<column name="description" value="Whether or not to include patient date of birth on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient DOB" />
+			<column name="description" value="The prefix to print before the patient DOB on the specimen labels (120 characters max.)." />
+			<column name="value" value="DOB:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient age" />
+			<column name="description" value="Whether or not to include patient age on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient age" />
+			<column name="description" value="The prefix to print before the patient age on the specimen labels (120 characters max.)." />
+			<column name="value" value="Age:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: patient gender" />
+			<column name="description" value="Whether or not to include patient gender on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: patient gender" />
+			<column name="description" value="The prefix to print before the patient gender on the specimen labels (120 characters max.)." />
+			<column name="value" value="Sex:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: lab section(s)" />
+			<column name="description" value="Whether or not to include lab section(s) where specimen processed on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: lab section(s)" />
+			<column name="description" value="The prefix to print before the lab section(s) on the specimen labels (120 characters max.)." />
+			<column name="value" value="Section(s):" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen labels: specimen type" />
+			<column name="description" value="Whether or not to include specimen type on the specimen labels." />
+			<column name="value" value="false" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="boolean" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+ 		<insert tableName="site_information" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+			<column name="name" value="Specimen prefix: specimen type" />
+			<column name="description" value="The prefix to print before the specimen type on the specimen labels (120 characters max.)." />
+			<column name="value" value="Type:" />
+			<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleLabelConfig') "/>
+			<column name="value_type" value="text" />
+			<column name="lastupdated" valueDate=" now() " />
+		</insert>
+    </changeSet>
+
+    <changeSet author="jsibley" id="8" context="VN_APHL" runOnChange="true">
+    	<comment>Set the sample entry autocomplete configuration options</comment>
+	<insert tableName="site_information" schemaName="clinlims">
+		<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+		<column name="name" value="useSampleTypeAutocomplete" />
+		<column name="description" value="If true, use an autocomplete field for sample type. Otherwise, use a drop-down list. [Sample entry modal version only]" />
+		<column name="value" value="true" />
+		<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleEntryConfig') "/>
+		<column name="value_type" value="boolean" />
+		<column name="instruction_key" value="instructions.sample.type.autocomplete" />
+		<column name="lastupdated" valueDate=" now() " />
+    	</insert>
+	<insert tableName="site_information" schemaName="clinlims">
+		<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+		<column name="name" value="useSampleSourceAutocomplete" />
+		<column name="description" value="If true, use an autocomplete field for sample source. Otherwise, use a drop-down list. [Sample entry modal version only]" />
+		<column name="value" value="true" />
+		<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleEntryConfig') "/>
+		<column name="value_type" value="boolean" />
+		<column name="instruction_key" value="instructions.sample.source.autocomplete" />
+		<column name="lastupdated" valueDate=" now() " />
+    	</insert>
+	<insert tableName="site_information" schemaName="clinlims">
+		<column name="id" valueNumeric=" nextval( 'site_information_seq' ) "></column>
+		<column name="name" value="useSampleSource" />
+		<column name="description" value="If true, display the sample source field on the sample entry screen. [Sample entry modal version only]" />
+		<column name="value" value="true" />
+		<column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'sampleEntryConfig') "/>
+		<column name="value_type" value="boolean" />
+		<column name="instruction_key" value="instructions.sample.source" />
+		<column name="lastupdated" valueDate=" now() " />
+    	</insert>
+    </changeSet>
+
+    <changeSet author="jsibley" id="9" context="VN_APHL" runOnChange="true">
+		<comment>Adds the module for batch entry to Intake role</comment>
+		<insert tableName="system_module" schemaName="clinlims">
+	    	<column name="id" valueNumeric=" nextval( 'system_module_seq' ) "></column>
+			<column name="name" value="QuickEntry" />
+			<column name="description" value="Sample->Batch Entry" />
+			<column name="has_select_flag" value="Y" />
+			<column name="has_add_flag" value="Y" />
+			<column name="has_update_flag" value="Y" />
+			<column name="has_delete_flag" value="Y" />
+		</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+    		<column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+        	<column name="has_select" value="Y"/>
+        	<column name="has_add" value="Y"/>
+        	<column name="has_update" value="Y"/>
+        	<column name="has_delete" value="Y"/>
+        	<column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Intake' ) "/>
+        	<column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'QuickEntry' ) "/>
+		</insert>
+    </changeSet>
+
+    <changeSet author="jsibley" id="10" context="VN_APHL" runOnChange="true">
+		<comment>Adds the module for sample label printing to Intake role</comment>
+		<insert tableName="system_module" schemaName="clinlims">
+	    	<column name="id" valueNumeric=" nextval( 'system_module_seq' ) "></column>
+			<column name="name" value="SampleLabelPrint" />
+			<column name="description" value="Sample->Print Labels" />
+			<column name="has_select_flag" value="Y" />
+			<column name="has_add_flag" value="Y" />
+			<column name="has_update_flag" value="Y" />
+			<column name="has_delete_flag" value="Y" />
+		</insert>
+        <insert schemaName="clinlims" tableName="system_role_module">
+        	<column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+        	<column name="has_select" value="Y"/>
+        	<column name="has_add" value="Y"/>
+        	<column name="has_update" value="Y"/>
+        	<column name="has_delete" value="Y"/>
+        	<column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Intake' ) "/>
+        	<column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'SampleLabelPrint' ) "/>
+		</insert>
+    </changeSet>
+
+	<changeSet author="jsibley" id="11" context="VN_APHL" runOnChange="true">
+		<comment>Update the 'Sample' menu items for VN_APHL</comment>
+		<insert schemaName="clinlims" tableName="menu">
+    		<column name="id" valueNumeric=" nextval( 'menu_seq' ) "/>
+        	<column name="parent_id" valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) "/>
+        	<column name="presentation_order" valueNumeric="1"/>
+        	<column name="element_id" value="menu_print_labels"/>
+			<column name="action_url" value="/SampleLabelPrint.do"/>
+        	<column name="display_key" value="banner.menu.printLabels"/>
+        	<column name="tool_tip_key" value="tooltip.bannner.menu.printLabels"/>
+    	</insert>
+    	<update tableName="menu" schemaName="clinlims">
+    		<column name="presentation_order" valueNumeric="2" />
+    		<where>element_id = 'menu_sample_add'</where>
+    	</update>
+    	<insert schemaName="clinlims" tableName="menu">
+        	<column name="id" valueNumeric=" nextval( 'menu_seq' ) "/>
+        	<column name="parent_id" valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) "/>
+        	<column name="presentation_order" valueNumeric="3"/>
+        	<column name="element_id" value="menu_batch_entry"/>
+			<column name="action_url" value="/QuickEntry.do"/>
+        	<column name="display_key" value="banner.menu.quickEntry"/>
+        	<column name="tool_tip_key" value="tooltip.bannner.menu.quickEntry"/>
+    	</insert>
+    	<update tableName="menu" schemaName="clinlims">
+    		<column name="presentation_order" valueNumeric="4" />
+    		<where>element_id = 'menu_sample_edit'</where>
+    	</update>
+    </changeSet>
+
+	<changeSet author="jsibley" id="12" context="VN_APHL" runOnChange="true">
+		<comment>Add any missing test section system modules and link them to appropriate user role(s)</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' ) " />
+            <column name="name" value="Workplan:microbiology" />
+            <column name="description" value="Workplan->microbiology" />
+            <column name="has_select_flag" value="Y" />
+            <column name="has_add_flag" value="Y" />
+            <column name="has_update_flag" value="Y" />
+            <column name="has_delete_flag" value="Y" />
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' ) " />
+            <column name="name" value="LogbookResults:microbiology" />
+            <column name="description" value="LogbookResults=>microbiology" />
+            <column name="has_select_flag" value="Y" />
+            <column name="has_add_flag" value="Y" />
+            <column name="has_update_flag" value="Y" />
+            <column name="has_delete_flag" value="Y" />
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' ) " />
+            <column name="name" value="ResultValidation:HIV" />
+            <column name="description" value="ResultValidation=>HIV" />
+            <column name="has_select_flag" value="Y" />
+            <column name="has_add_flag" value="Y" />
+            <column name="has_update_flag" value="Y" />
+            <column name="has_delete_flag" value="Y" />
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' ) " />
+            <column name="name" value="ResultValidation:microbiology" />
+            <column name="description" value="ResultValidation=>microbiology" />
+            <column name="has_select_flag" value="Y" />
+            <column name="has_add_flag" value="Y" />
+            <column name="has_update_flag" value="Y" />
+            <column name="has_delete_flag" value="Y" />
+        </insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Results entry' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'Workplan:biochemistry' ) "/>
+    	</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Results entry' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'Workplan:microbiology' ) "/>
+    	</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Results entry' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'LogbookResults:biochemistry' ) "/>
+    	</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Results entry' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'LogbookResults:microbiology' ) "/>
+    	</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Validation' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'ResultValidation:HIV' ) "/>
+    	</insert>
+    	<insert schemaName="clinlims" tableName="system_role_module">
+             <column name="id" valueNumeric=" nextVal( 'system_user_module_seq' ) "/>
+             <column name="has_select" value="Y"/>
+             <column name="has_add" value="Y"/>
+             <column name="has_update" value="Y"/>
+             <column name="has_delete" value="Y"/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Validation' ) "/>
+             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'ResultValidation:microbiology' ) "/>
+    	</insert>
+	</changeSet>
+
+	<changeSet author="jsibley" id="13" context="VN_APHL" runOnChange="true">
+		<comment>Update the menus that use lists of test sections</comment>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Biochemistry' ) " />
+			<column name="element_id" value="menu_workplan_biochemistry" />
+			<column name="action_url" value="/WorkPlanByTestSection.do?type=biochemistry" />
+			<column name="display_key" value="test.section.biochemistry" />
+			<column name="tool_tip_key" value="test.section.biochemistry" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Immunology' ) " />
+			<column name="element_id" value="menu_workplan_immunology" />
+			<column name="action_url" value="/WorkPlanByTestSection.do?type=immuno" />
+			<column name="display_key" value="test.section.immunology" />
+			<column name="tool_tip_key" value="test.section.immunology" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'HIV' ) " />
+			<column name="element_id" value="menu_workplan_hiv" />
+			<column name="action_url" value="/WorkPlanByTestSection.do?type=HIV" />
+			<column name="display_key" value="test.section.hiv" />
+			<column name="tool_tip_key" value="test.section.hiv" />
+		</insert>
+    	<update schemaName="clinlims" tableName="menu">
+    		<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Hematology' ) " />
+			<column name="display_key" value="test.section.hematology" />
+			<column name="tool_tip_key" value="test.section.hematology" />
+    		<where>element_id = 'menu_workplan_hematology'</where>
+    	</update>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Microbiology' ) " />
+			<column name="element_id" value="menu_workplan_microbiology" />
+			<column name="action_url" value="/WorkPlanByTestSection.do?type=microbiology" />
+			<column name="display_key" value="test.section.microbiology" />
+			<column name="tool_tip_key" value="test.section.microbiology" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Biochemistry' ) " />
+			<column name="element_id" value="menu_results_biochemistry" />
+			<column name="action_url" value="/LogbookResults.do?type=biochemistry" />
+			<column name="display_key" value="test.section.biochemistry" />
+			<column name="tool_tip_key" value="test.section.biochemistry" />
+		</insert>
+    	<update schemaName="clinlims" tableName="menu">
+    		<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Immunology' ) " />
+			<column name="display_key" value="test.section.immunology" />
+			<column name="tool_tip_key" value="test.section.immunology" />
+    		<where>element_id = 'menu_results_immunology'</where>
+    	</update>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'HIV' ) " />
+			<column name="element_id" value="menu_results_hiv" />
+			<column name="action_url" value="/LogbookResults.do?type=HIV" />
+			<column name="display_key" value="test.section.hiv" />
+			<column name="tool_tip_key" value="test.section.hiv" />
+		</insert>
+    	<update schemaName="clinlims" tableName="menu">
+    		<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Hematology' ) " />
+			<column name="display_key" value="test.section.hematology" />
+			<column name="tool_tip_key" value="test.section.hematology" />
+    		<where>element_id = 'menu_results_hematology'</where>
+    	</update>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Microbiology' ) " />
+			<column name="element_id" value="menu_results_microbiology" />
+			<column name="action_url" value="/LogbookResults.do?type=microbiology" />
+			<column name="display_key" value="test.section.microbiology" />
+			<column name="tool_tip_key" value="test.section.microbiology" />
+		</insert>
+    	<update schemaName="clinlims" tableName="menu">
+    		<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Biochemistry' ) " />
+			<column name="display_key" value="test.section.biochemistry" />
+			<column name="tool_tip_key" value="test.section.biochemistry" />
+    		<where>element_id = 'menu_resultvalidation_biochemistry'</where>
+    	</update>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Immunology' ) " />
+			<column name="element_id" value="menu_resultvalidation_immunology" />
+			<column name="action_url" value="/ResultValidation.do?type=immunology&amp;test=" />
+			<column name="display_key" value="test.section.immunology" />
+			<column name="tool_tip_key" value="test.section.immunology" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'HIV' ) " />
+			<column name="element_id" value="menu_resultvalidation_hiv" />
+			<column name="action_url" value="/ResultValidation.do?type=HIV&amp;test=" />
+			<column name="display_key" value="test.section.hiv" />
+			<column name="tool_tip_key" value="test.section.hiv" />
+		</insert>
+    	<update schemaName="clinlims" tableName="menu">
+    		<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Hematology' ) " />
+			<column name="display_key" value="test.section.hematology" />
+			<column name="tool_tip_key" value="test.section.hematology" />
+    		<where>element_id = 'menu_resultvalidation_hematology'</where>
+    	</update>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+			<column name="presentation_order" valueNumeric=" ( select sort_order from clinlims.test_section where name = 'Microbiology' ) " />
+			<column name="element_id" value="menu_resultvalidation_microbiology" />
+			<column name="action_url" value="/ResultValidation.do?type=microbiology&amp;test=" />
+			<column name="display_key" value="test.section.microbiology" />
+			<column name="tool_tip_key" value="test.section.microbiology" />
+		</insert>
+    </changeSet>
+
+</databaseChangeLog>
