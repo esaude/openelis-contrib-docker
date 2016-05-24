@@ -4,7 +4,7 @@ openelis-tomcat:
     - "8080:8080"
   container_name: openelis-tomcat
   links:
-    - openmrs-refapp-mysql
+    - openelis-postgresql
 openelis-postgresql:
   build: postgresql
   ports:
