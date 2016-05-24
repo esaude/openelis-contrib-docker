@@ -43,10 +43,9 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
       fi
 
       cat <<-EOF > "$tempFile"
-      		CREATE USER 'clinlims' IDENTIFIED BY 'clinlims';
-      		GRANT ALL PRIVILEGES ON *.* TO 'clinlims'@'localhost' WITH GRANT OPTION;
+      		CREATE USER clinlims WITH PASSWORD 'clinlims';
       		CREATE DATABASE IF NOT EXISTS 'clinlims' CHARACTER SET utf8 COLLATE utf8_general_ci;
-      		GRANT ALL ON 'clinlims' to 'clinlims'@'%' IDENTIFIED BY 'clinlims';
+      		GRANT ALL PRIVILEGES ON database clinlims TO clinlims
       	EOF
 
         psql --username "clinlims" --dbname "clinlims" < "$tempFile"
