@@ -33,6 +33,32 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
       op=ALTER
     fi
 
+    #creating user that will be associated with the openelis application
+    # 1 create a new user with login privileges and set password
+    # 2 create new database owned by that user with UTF-8 encoding
+
+        tempFile=$(mktemp)
+      if [ ! -f "tempFile" ]; then
+          return 1
+      fi
+
+      cat <<-EOF > "$tempFile"
+      		CREATE USER clinlims IDENTIFIED BY 'clinlims';
+      		GRANT ALL PRIVILEGES ON *.* TO 'clinlims'@'localhost' WITH GRANT OPTION;
+      		CREATE DATABASE IF NOT EXISTS 'clinlims' CHARACTER SET utf8 COLLATE utf8_general_ci;
+      		GRANT ALL ON 'clinlims'.* to 'clinlims'@'%' IDENTIFIED BY 'clinlims';
+      	EOF
+
+        psql --username "clinlims" --dbname "clinlims" < "$tempFile"
+        rm -f "$tempFile"
+    #Restore the database dump file ('oegClinical.backup') into the new database
+    #This file is found in the current directory
+        sudo -u postgres pg_restore -d clinlims oegClinical.backup
+
+    #Once the restore is complete, bring the database up-to-date using Liquibase
+    #This command is found in build.xml located in the current directory
+        ant updateDB
+    #end of creating openelis user and database
     userSql="$op USER $POSTGRES_USER WITH SUPERUSER $pass;"
     echo $userSql | gosu postgres postgres --single -jE
     echo
