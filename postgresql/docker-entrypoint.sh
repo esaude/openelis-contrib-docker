@@ -45,7 +45,7 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
       cat <<-EOF > "$tempFile"
       		CREATE USER clinlims WITH PASSWORD 'clinlims';
       		CREATE DATABASE IF NOT EXISTS 'clinlims' CHARACTER SET utf8 COLLATE utf8_general_ci;
-      		GRANT ALL PRIVILEGES ON database clinlims TO clinlims
+      		GRANT ALL PRIVILEGES ON database clinlims TO clinlims;
       	EOF
 
         psql --username "clinlims" --dbname "clinlims" < "$tempFile"
