@@ -14,3 +14,26 @@ To log into OpenElis, use the following details:
 * **Host**: `DOCKER_HOST:8080/openElisGlobal`
 * **username**: admin
 * **Pass**: adminADMIN!
+
+### Setup
+
+Start by cloning this repository:
+
+````
+git clone https://github.com/esaude/openelis-contrib-docker.git
+````
+Enter the directory and build the images:
+
+````
+cd openelis-contrib-docker
+docker-compose build
+
+Once the build is complete, you can run the openelis by executing the following:
+
+````
+docker-compose up
+````
+
+## License
+
+MPL-2.0
